@@ -23,10 +23,10 @@ def handle(req):
     try:
         url = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={api_key}"
         response = requests.get(url)
-        data = response.json()
+        data = response.json()    
+        print(json.dumps(data))
     except Exception as e:
         print(str(e))
         # return func.HttpResponse(str(e), status_code=500)
 
-    print(json.dumps(data))
     # return func.HttpResponse(json.dumps(data), status_code=200)
