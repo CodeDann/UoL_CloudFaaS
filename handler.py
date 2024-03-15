@@ -37,31 +37,31 @@ import requests
 
 def handle(req):
     print(req)
-    result = {"result": ""}
+    # result = {"result": ""}
 
-    json_req = json.loads(req)
+    # json_req = json.loads(req)
 
-    lat = requests.get(json_req["lat"])
-    if json_req["lat"] not in lat.text:
-        result = {"result": "Error: latitude not found in request"}
+    # lat = requests.get(json_req["lat"])
+    # if json_req["lat"] not in lat.text:
+    #     result = {"result": "Error: latitude not found in request"}
 
-    long = requests.get(json_req["long"])
-    if json_req["long"] not in long.text:
-        result = {"result": "Error: longitude not found in request"}
+    # long = requests.get(json_req["long"])
+    # if json_req["long"] not in long.text:
+    #     result = {"result": "Error: longitude not found in request"}
 
-    api_key = "044d96d0a9150903ca5e80fc1a5da8e7"
+    # api_key = "044d96d0a9150903ca5e80fc1a5da8e7"
 
 
-    if result["result"] == "":
-        try:
-            url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={long}&appid={api_key}"
-            response = requests.get(url)
-            data = response.json()
-            result = {"result": data}    
-        except Exception as e:
-            result = {"result": str(e)}
+    # if result["result"] == "":
+    #     try:
+    #         url = f"https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={long}&appid={api_key}"
+    #         response = requests.get(url)
+    #         data = response.json()
+    #         result = {"result": data}    
+    #     except Exception as e:
+    #         result = {"result": str(e)}
     
-    print(json.dumps(result))
+    # print(json.dumps(result))
 
 
 
