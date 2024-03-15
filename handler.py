@@ -9,11 +9,14 @@ def get_val_or_error(request, key):
 
 
 def handle(req):
-    try:
-        latitude = get_val_or_error(req, 'lat')
-        longitude = get_val_or_error(req, 'long')
-    except ValueError as e:
-        return str(e)
+    # try:
+    #     latitude = get_val_or_error(req, 'lat')
+    #     longitude = get_val_or_error(req, 'long')
+    # except ValueError as e:
+    #     return str(e)
+    data = json.loads(req)
+    latitude = data.get('lat')
+    longitude = data.get('long')
         # print(str(e))
         # return func.HttpResponse(str(e), status_code=400)
     print(latitude, longitude)
