@@ -3,7 +3,7 @@ import requests
 
 
 def get_val_or_error(request, key):
-    val = request.params.get(key)
+    val = request.get(key)
     if val is None or val == "":
         raise ValueError(f"Missing required parameter '{key}'")
 
