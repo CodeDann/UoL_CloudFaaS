@@ -9,15 +9,14 @@ def get_val_or_error(request, key):
 
 
 def handle(req):
-    print(req[1])
-    # try:
-    #     latitude = get_val_or_error(req, 'lat')
-    #     longitude = get_val_or_error(req, 'long')
-    # except ValueError as e:
-    #     return str(e)
-    #     # print(str(e))
-    #     # return func.HttpResponse(str(e), status_code=400)
-    # print(latitude, longitude)
+    try:
+        latitude = get_val_or_error(req, 'lat')
+        longitude = get_val_or_error(req, 'long')
+    except ValueError as e:
+        return str(e)
+        # print(str(e))
+        # return func.HttpResponse(str(e), status_code=400)
+    print(latitude, longitude)
     # # todo store API more securely
     # api_key = "044d96d0a9150903ca5e80fc1a5da8e7"
 
@@ -27,8 +26,8 @@ def handle(req):
     #     data = response.json()    
     #     print(json.dumps(data))
     # except Exception as e:
-        # print(str(e))
-        # return func.HttpResponse(str(e), status_code=500)
+    #     print(str(e))
+    #     return func.HttpResponse(str(e), status_code=500)
 
     # return func.HttpResponse(json.dumps(data), status_code=200)
         
