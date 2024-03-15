@@ -9,7 +9,7 @@ def get_val_or_error(request, key):
 
 
 def handle(req):
-    print(req['lat'])
+    print(req[1])
     # try:
     #     latitude = get_val_or_error(req, 'lat')
     #     longitude = get_val_or_error(req, 'long')
