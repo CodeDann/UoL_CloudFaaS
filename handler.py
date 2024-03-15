@@ -36,6 +36,7 @@ import requests
 
 
 def handle(req):
+    print(req)
     result = {"result": ""}
 
     json_req = json.loads(req)
@@ -61,6 +62,9 @@ def handle(req):
             result = {"result": str(e)}
     
     print(json.dumps(result))
+
+
+
 
 
 
