@@ -12,7 +12,9 @@ def connect_to_db():
 def handle(req):
     # data = json.loads(req)
     # print("YOYO gotta connect to database")
+
+    
     # print(data)
     connect_to_db()
-
+ 
 # connect_to_db()
