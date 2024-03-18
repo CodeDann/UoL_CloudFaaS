@@ -166,5 +166,5 @@ def check_red_flags(data):
     except Exception as e:
         print(str(e))
 
-print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
+# print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
 # print(handle('{"city": "Liverpool"}'))
