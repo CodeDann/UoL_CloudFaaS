@@ -55,7 +55,7 @@ def handle(req):
 
     if coords is not None:
         output = call_api(coords[0], coords[1], city)
-        update_averages(output)
+        check_red_flags(output)
     else:
         return {
             "status": 404,
