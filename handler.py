@@ -32,8 +32,42 @@ def handle(req):
     try:
         req = json.loads(req)
         city = get_val_or_error(req, "city")
+        wind = get_val_or_error(req, "wind")
+        temp = get_val_or_error(req, "temp")
+        max_temp = get_val_or_error(req, "max_temp")
+        min_temp = get_val_or_error(req, "min_temp")
+        humidity = get_val_or_error(req, "humidity")
+        pressure = get_val_or_error(req, "pressure")
     except ValueError as e:
         return {
             "status": 400,
             "message": str(e)
         }
+
+
+    # get max vals from db
+    try:
+        query = ("SELECT * FROM weather WHERE city = %s")
+        cursor.execute(query, (city,))
+        row = cursor.fetchone()
+        if row is not None:
+            max_wind = row[1]
+            max_temp = row[2]
+            max_humidity = row[3]
+            max_pressure = row[4]
+        else:
+            raise ValueError(f"City '{city}' not found in database")
+    except Exception as e:
+        return {
+            "status": 500,
+            "message": "Failed to get max vals from db"
+        }
+    
+    return {
+        "status": 200,
+        "message": "Success",
+        "max_wind": max_wind,
+        "max_temp": max_temp,
+        "max_humidity": max_humidity,
+        "max_pressure": max_pressure
+    }
