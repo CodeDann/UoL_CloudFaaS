@@ -8,8 +8,10 @@ config = {
   'raise_on_warnings': True,
 
 }
+    
 
-def connect_to_db():
+def handle(req):
+
     try:
         cnx = connection.MySQLConnection(**config)
         cursor = cnx.cursor()
@@ -17,8 +19,6 @@ def connect_to_db():
     except Exception as e:
         print("Error: ", e)
 
-def handle(req):
-    cursor = connect_to_db()
     # Execute the SELECT statement
     cursor.execute("SELECT * FROM averages")
 
