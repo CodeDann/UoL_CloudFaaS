@@ -147,7 +147,7 @@ def check_red_flags(data):
     try:
         data = json.dumps(data)
         response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data)
-        print(response.text)
+        print("response from red-flags: " + response.text)
         print(response.status_code)
         try:
             print(response.json())
