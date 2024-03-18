@@ -32,7 +32,7 @@ def handle(req):
     print("connected to database")
     # parse the request
     try:
-        req = json.loads(req)
+        # req = json.loads(req)
         city = get_val_or_error(req, "city")
         wind = get_val_or_error(req, "wind")
         temp = get_val_or_error(req, "temp")
@@ -41,6 +41,7 @@ def handle(req):
         humidity = get_val_or_error(req, "humidity")
         pressure = get_val_or_error(req, "pressure")
     except ValueError as e:
+        print("failed to parse request")
         return {
             "status": 400,
             "message": str(e)
