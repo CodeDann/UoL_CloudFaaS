@@ -6,7 +6,6 @@ config = {
   'host': 'sc20jdpn-mysql-db.mysql.database.azure.com',
   'database': 'data',
   'raise_on_warnings': True,
-
 }
     
 
@@ -17,6 +16,7 @@ def handle(req):
         cursor = cnx.cursor()
     except Exception as e:
         print("Error: ", e)
+        return
 
     # Execute the SELECT statement
     cursor.execute("SELECT * FROM averages")
