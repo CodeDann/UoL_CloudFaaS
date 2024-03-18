@@ -50,10 +50,10 @@ def handle(req):
         cursor.execute(query, (city,))
         row = cursor.fetchone()
         if row is not None:
-            max_wind = row[1]
-            max_temp = row[2]
-            max_humidity = row[3]
-            max_pressure = row[4]
+            max_wind = row[0]
+            max_temp = row[1]
+            max_humidity = row[2]
+            max_pressure = row[3]
         else:
             raise ValueError(f"City '{city}' not found in database")
     except Exception as e:
@@ -86,12 +86,12 @@ def handle(req):
         "message": returnMsg,
     }
 
-# print(handle({
+# print(handle(json.dumps({
 #     "city": "London",
 #     "wind": 3,
 #     "temp": 20,
-#     "max_temp": 25,
-#     "min_temp": 15,
+#     "temp_max": 25,
+#     "temp_min": 15,
 #     "humidity": 50,
 #     "pressure": 1010
-# }))
+# })))
