@@ -28,7 +28,6 @@ def handle(req):
             "status": 500,
             "message": "Failed to connect to the database"
         }
-    print("Connected to the database")
 
 
     try:
@@ -42,20 +41,21 @@ def handle(req):
                 return {
                     "status": 404,
                     "message": "City not found",
-                    "message-long": "If you want to add it to the database, please provide the latitude and longitude."
+                    "message-long": "If you want to add it to the database, please provide the latitude, longitude and tolerance."
                 }
             else:
                 output = call_api(coords[0], coords[1], city)
                 check_red_flags(output)
-        elif len(data) == 3:
+        elif len(data) == 4:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
             longitude = get_val_or_error(data, "lon")
+            longitude = get_val_or_error(data, "tolerance")
             # check if the city exists in the database
             coords = get_coords_from_db(cursor, city)
             if coords is None:
                 # if not, add it
-                add_city_to_db(cursor, cnx, city, latitude, longitude)
+                add_city_to_db(cursor, cnx, city, latitude, longitude, tolerance)
             else:
                 # if it does, update the coordinates
                 update_city_in_db(cursor, cnx, city, latitude, longitude)
@@ -123,9 +123,9 @@ def format_data(data, city):
         print(str(e))
 
 
-def add_city_to_db(cursor, cnx, city, latitude, longitude):
+def add_city_to_db(cursor, cnx, city, latitude, longitude, tolerance):
     try:
-        query = f"INSERT INTO cities (city_name, latitude, longitude) VALUES ('{city}', {latitude}, {longitude})"
+        query = f"INSERT INTO cities (city_name, latitude, longitude, tolerance) VALUES ('{city}', {latitude}, {longitude}, {tolerance})"
         cursor.execute(query)
         print(f"Added city '{city}' to the database")
         cnx.commit()
