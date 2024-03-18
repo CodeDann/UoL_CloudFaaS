@@ -29,10 +29,10 @@ def handle(req):
             "status": 500,
             "message": "Failed to connect to the database"
         }
-    print("connected to database")
+    print("connected to database successfully")
     # parse the request
     try:
-        # req = json.loads(req)
+        req = json.loads(req)
         city = get_val_or_error(req, "city")
         wind = get_val_or_error(req, "wind")
         temp = get_val_or_error(req, "temp")
