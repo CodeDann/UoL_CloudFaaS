@@ -30,7 +30,7 @@ def handle(req):
     
     # parse the request
     try:
-        req = json.loads(req)
+        # req = json.loads(req)
         city = get_val_or_error(req, "city")
         wind = get_val_or_error(req, "wind")
         temp = get_val_or_error(req, "temp")
@@ -47,7 +47,7 @@ def handle(req):
 
     # get max vals from db
     try:
-        query = ("SELECT * FROM weather WHERE city = %s")
+        query = ("SELECT * FROM red_flags WHERE city_name = %s")
         cursor.execute(query, (city,))
         row = cursor.fetchone()
         if row is not None:
@@ -60,7 +60,7 @@ def handle(req):
     except Exception as e:
         return {
             "status": 500,
-            "message": "Failed to get max vals from db"
+            "message": "Failed to get max vals from db" + str(e)
         }
     
     return {
@@ -71,3 +71,13 @@ def handle(req):
         "max_humidity": max_humidity,
         "max_pressure": max_pressure
     }
+
+# print(handle({
+#     "city": "London",
+#     "wind": 3,
+#     "temp": 20,
+#     "max_temp": 25,
+#     "min_temp": 15,
+#     "humidity": 50,
+#     "pressure": 1010
+# }))
