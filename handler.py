@@ -15,7 +15,6 @@ def handle(req):
     try:
         cnx = connection.MySQLConnection(**config)
         cursor = cnx.cursor()
-        return cursor
     except Exception as e:
         print("Error: ", e)
 
@@ -27,3 +26,5 @@ def handle(req):
 
     for row in rows:
         print(row)
+
+# handle("")
