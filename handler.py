@@ -157,6 +157,9 @@ def check_red_flags(data):
     try:
         # data = json.dumps(data)
         # print("Calling red-flags with data: " + data)
+        # call data calc function
+        requests.post("http://gateway:8080/function/data-calc", json=data)
+        # call red-flags function
         response = requests.post("http://gateway:8080/function/red-flags", json=data)
         print("response from red-flags: ")
         try:
