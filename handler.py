@@ -143,16 +143,13 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
 
 
 def check_red_flags(data):
-    print("calling red flags")
     try:
         data = json.dumps(data)
+        print("Calling red-flags with data: " + data)
         response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data)
         print("response from red-flags: " + response.text)
-        print(response.status_code)
-        try:
-            print(response.json())
-        except:
-            print("No JSON returned")
+        for item in response:
+            print(item)
     except Exception as e:
         print(str(e))
 
