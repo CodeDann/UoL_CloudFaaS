@@ -18,6 +18,7 @@ def get_val_or_error(request, key):
 
 
 def handle(req):
+    print("red flags handler")
     # connect to the database
     try:
         cnx = connection.MySQLConnection(**config)
@@ -27,7 +28,7 @@ def handle(req):
             "status": 500,
             "message": "Failed to connect to the database"
         }
-    
+    print("connected to database")
     # parse the request
     try:
         req = json.loads(req)
@@ -44,7 +45,7 @@ def handle(req):
             "message": str(e)
         }
 
-
+    print("got values")
     # get max vals from db
     try:
         query = ("SELECT * FROM red_flags WHERE city_name = %s")
@@ -63,6 +64,8 @@ def handle(req):
             "message": "Failed to get max vals from db" + str(e)
         }
     
+    print("got max vals")
+    print("returning")
     return {
         "status": 200,
         "message": "Success",
