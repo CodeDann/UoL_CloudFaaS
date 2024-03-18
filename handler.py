@@ -29,6 +29,8 @@ def handle(req):
             "message": "Failed to connect to the database"
         }
     print("Connected to the database")
+
+
     try:
         data = json.loads(req)
         if len(data) == 0:
@@ -36,6 +38,12 @@ def handle(req):
         elif len(data) == 1:
             city = get_val_or_error(data, "city")
             coords = get_coords_from_db(cursor, city)
+            if coords is None:
+                return {
+                    "status": 404,
+                    "message": "City not found",
+                    "message-long": "If you want to add it to the database, please provide the latitude and longitude."
+                }
         elif len(data) == 3:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
@@ -48,39 +56,40 @@ def handle(req):
             else:
                 # if it does, update the coordinates
                 update_city_in_db(cursor, cnx, city, latitude, longitude)
-    except ValueError as e:
+
+            print("Successfully updated / added city")
+            return {    
+                "status": 200,
+                "message": "Successfully updated / added city"
+            }
+    except Exception as e:
         print("Error extracting data" + str(e))
         return {    
             "status": 400,
-            "message": "Error extracting data" + str(e)
+            "message": "Error extracting data: " + str(e)
         }
-    print("Data extracted")
-    if coords is not None:
-        output = call_api(coords[0], coords[1], city)
-        check_red_flags(output)
-        return
-    else:
-        return {
-            "status": 404,
-            "message": "City not found",
-            "message-long": "If you want to add it to the database, please provide the latitude and longitude."
-        }
+    print("Data extracted from query")
+
+    output = call_api(coords[0], coords[1], city)
+    check_red_flags(output)
+    return {
+        "status": 200,
+        "data": output
+    }
+   
    
 
 def get_coords_from_db(cursor, city):
-    try:
-        query = f"SELECT latitude, longitude FROM cities WHERE city_name = '{city}'"
-        cursor.execute(query)
-        row = cursor.fetchone()
-        if row is not None:
-            latitude = row[0]
-            longitude = row[1]
-            return [latitude, longitude]
-        else:
-            return None
-    except Exception as e:
-        print(str(e))
+    query = f"SELECT latitude, longitude FROM cities WHERE city_name = '{city}'"
+    cursor.execute(query)
+    row = cursor.fetchone()
+    if row is not None:
+        latitude = row[0]
+        longitude = row[1]
+        return [latitude, longitude]
+    else:
         return None
+   
 
 def call_api(latitude, longitude, city):
     api_key = "044d96d0a9150903ca5e80fc1a5da8e7"
