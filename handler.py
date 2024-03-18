@@ -28,7 +28,7 @@ def handle(req):
             "status": 500,
             "message": "Failed to connect to the database"
         }
-
+    print("Connected to the database")
     try:
         data = json.loads(req)
         if len(data) == 0:
@@ -54,10 +54,11 @@ def handle(req):
             "status": 400,
             "message": "Error extracting data" + str(e)
         }
-
+    print("Data extracted")
     if coords is not None:
         output = call_api(coords[0], coords[1], city)
         check_red_flags(output)
+        return
     else:
         return {
             "status": 404,
@@ -137,8 +138,10 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
 
 
 def check_red_flags(data):
+    print("calling red flags")
     try:
         data = json.dumps(data)
+        print("Data: " + data)
         response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data)
         print(response.json())
     except Exception as e:
