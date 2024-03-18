@@ -136,7 +136,7 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
 
 def check_red_flags(data):
     try:
-        response = requests.post("http://gateway.openfaas:8080/function/red-flags", json=data)
+        response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data)
         print(response.json())
     except Exception as e:
         print(str(e))
