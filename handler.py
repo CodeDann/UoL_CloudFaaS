@@ -144,7 +144,7 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
 
 def check_red_flags(data):
     try:
-        data = json.dumps(data)
+        # data = json.dumps(data)
         print("Calling red-flags with data: " + data)
         response = requests.post("http://gateway:8080/function/red-flags", json=data)
         print("response from red-flags: " + response.text)
