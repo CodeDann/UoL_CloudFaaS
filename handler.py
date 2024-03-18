@@ -54,7 +54,8 @@ def handle(req):
         }
 
     if coords is not None:
-        call_api(coords[0], coords[1], city)
+        output = call_api(coords[0], coords[1], city)
+        update_averages(output)
     else:
         return {
             "status": 404,
@@ -129,6 +130,14 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
         cursor.execute(query)
         print(f"Updated city '{city}' in the database")
         cnx.commit()
+    except Exception as e:
+        print(str(e))
+
+
+def check_red_flags(data):
+    try:
+        response = requests.post("http://gateway.openfaas:8080/function/red-flags", json=data)
+        print(response.json())
     except Exception as e:
         print(str(e))
 
