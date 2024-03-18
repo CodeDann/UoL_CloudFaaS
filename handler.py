@@ -1,5 +1,6 @@
 from mysql.connector import (connection)
 import json
+import pandas as pd
 
 config = {
   'user': 'jaken',
@@ -18,27 +19,75 @@ def get_val_or_error(request, key):
 
 def handle(req):    
 
+    # connect to the database
     try:
         cnx = connection.MySQLConnection(**config)
         cursor = cnx.cursor()
     except Exception as e:
-        print("Error: ", e)
-        return
+        return {
+            "status": 500,
+            "message": "Failed to connect to the database"
+        }
+    # parse the request
     try:
-        data = json.loads(req)
-        city = get_val_or_error(data, "city")
-    except ValueError as e:
-        return str(e)
+        req = json.loads(req)
+        city = get_val_or_error(req, "city")
+        wind = get_val_or_error(req, "wind")
+        temp = get_val_or_error(req, "temp")
+        max_temp = get_val_or_error(req, "temp_min")
+        min_temp = get_val_or_error(req, "temp_max")
+        humidity = get_val_or_error(req, "humidity")
+        pressure = get_val_or_error(req, "pressure")
+    except Exception as e:
+        return {
+            "status": 400,
+            "message": str(e)
+        }
+    
+    # save data to database
+    try:
+        cursor.execute("INSERT INTO weather (city_name, wind, temp, max_temp, min_temp, humidity, pressure) VALUES (%s, %s, %s, %s, %s, %s, %s)", (city, wind, temp, max_temp, min_temp, humidity, pressure))
+        cnx.commit()
+    except Exception as e:
+        return {
+            "status": 500,
+            "message": "Failed to save data to the database" + str(e)
+        }
+    
+    # calcualte averages for this city
+    try:
+        cursor.execute("SELECT wind, temp, humidity, pressure FROM weather WHERE city_name = %s", (city,))
+        data = cursor.fetchall()
+        df = pd.DataFrame(data, columns=["wind", "temp", "humidity", "pressure"])
+        # calculate averages
+        averages = df.mean()
+        # calculate the standard deviation
+        std_dev = df.std()
+        # save means and standard deviation to the database
+        cursor.execute("INSERT INTO stats (city_name, average_temp, deviation_temp, average_wind, deviation_wind, average_humidity, deviation_humidity, average_pressure, deviation_pressure) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (city, float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"])))
+        cnx.commit()
+    except Exception as e:
+        return {
+            "status": 500,
+            "message": "Failed to calculate averages" + str(e)
+        }
     
 
+    # close the connection
+    cursor.close()
+    cnx.close()
+    return {
+        "status": 200,
+        "message": "Data saved successfully"
+    }
 
-    # Execute the SELECT statement
-    cursor.execute("SELECT * FROM averages")
 
-    # Fetch all the rows
-    rows = cursor.fetchall()
-
-    for row in rows:
-        print(row)
-
-# handle("")
+print(handle(json.dumps({
+    "city": "London",
+    "wind": 1,
+    "temp": 20,
+    "temp_max": 25,
+    "temp_min": 15,
+    "humidity": 50,
+    "pressure": 1010
+})))
