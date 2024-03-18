@@ -18,13 +18,18 @@ config = {
 def connect_to_db():
     try:
         cnx = connection.MySQLConnection(**config)
-        cnx.close()
-        print("connected")
+        cursor = cnx.cursor()
+        return cursor
     except Exception as e:
         print("Error: ", e)
 
 def handle(req):
-    connect_to_db()
- 
-# connect_to_db()
-# handle("")
+    cursor = connect_to_db()
+    # Execute the SELECT statement
+    cursor.execute("SELECT * FROM averages")
+
+    # Fetch all the rows
+    rows = cursor.fetchall()
+
+    for row in rows:
+        print(row)
