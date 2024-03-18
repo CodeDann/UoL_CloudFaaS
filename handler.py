@@ -44,6 +44,9 @@ def handle(req):
                     "message": "City not found",
                     "message-long": "If you want to add it to the database, please provide the latitude and longitude."
                 }
+            else:
+                output = call_api(coords[0], coords[1], city)
+                check_red_flags(output)
         elif len(data) == 3:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
@@ -68,15 +71,8 @@ def handle(req):
             "status": 400,
             "message": "Error extracting data: " + str(e)
         }
-    print("Data extracted from query")
 
-    output = call_api(coords[0], coords[1], city)
-    check_red_flags(output)
-    return {
-        "status": 200,
-        "data": output
-    }
-   
+       
    
 
 def get_coords_from_db(cursor, city):
