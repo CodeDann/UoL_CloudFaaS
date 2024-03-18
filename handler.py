@@ -40,7 +40,7 @@ def handle(req):
         min_temp = get_val_or_error(req, "temp_max")
         humidity = get_val_or_error(req, "humidity")
         pressure = get_val_or_error(req, "pressure")
-    except ValueError as e:
+    except Exception as e:
         print("failed to parse request")
         return {
             "status": 400,
