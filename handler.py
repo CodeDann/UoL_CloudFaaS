@@ -41,30 +41,37 @@ def handle(req):
                 return {
                     "status": 404,
                     "message": "City not found",
-                    "message-long": "If you want to add it to the database, please provide the latitude, longitude and tolerance."
+                    "message-long": "If you want to add it to the database, please provide the latitude, longitude, and max_temp, max_humiditiy, max_pressure, max_wind_speed."
                 }
             else:
                 output = call_api(coords[0], coords[1], city)
                 check_red_flags(output)
-        elif len(data) == 4:
+        elif len(data) == 7:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
             longitude = get_val_or_error(data, "lon")
-            longitude = get_val_or_error(data, "tolerance")
+            max_temp = get_val_or_error(data, "max_temp")
+            max_humidity = get_val_or_error(data, "max_humidity")
+            max_pressure = get_val_or_error(data, "max_pressure")
+            max_wind_speed = get_val_or_error(data, "max_wind_speed")
             # check if the city exists in the database
             coords = get_coords_from_db(cursor, city)
             if coords is None:
                 # if not, add it
-                add_city_to_db(cursor, cnx, city, latitude, longitude, tolerance)
+                add_city_to_db(cursor, cnx, city, latitude, longitude, max_temp, max_humidity, max_pressure, max_wind_speed)
+                return {    
+                    "status": 200,
+                    "message": "Successfully added city"
+                }
             else:
                 # if it does, update the coordinates
-                update_city_in_db(cursor, cnx, city, latitude, longitude)
+                update_city_in_db(cursor, cnx, city, latitude, longitude, max_temp, max_humidity, max_pressure, max_wind_speed)
+                return {    
+                    "status": 200,
+                    "message": "Successfully updated city"
+                }
 
-            print("Successfully updated / added city")
-            return {    
-                "status": 200,
-                "message": "Successfully updated / added city"
-            }
+            
     except Exception as e:
         print("Error extracting data" + str(e))
         return {    
@@ -123,18 +130,22 @@ def format_data(data, city):
         print(str(e))
 
 
-def add_city_to_db(cursor, cnx, city, latitude, longitude, tolerance):
+def add_city_to_db(cursor, cnx, city, latitude, longitude, max_temp, max_humidity, max_pressure, max_wind_speed):
     try:
-        query = f"INSERT INTO cities (city_name, latitude, longitude, tolerance) VALUES ('{city}', {latitude}, {longitude}, {tolerance})"
+        query = f"INSERT INTO cities (city_name, latitude, longitude) VALUES ('{city}', {latitude}, {longitude})"
         cursor.execute(query)
         print(f"Added city '{city}' to the database")
+        query = f"INSERT INTO red_flags (city_name, max_temp, max_humidity, max_pressure, max_wind_speed) VALUES ('{city}', {max_temp}, {max_humidity}, {max_pressure}, {max_wind_speed})"
+        cursor.execute(query)
         cnx.commit()
     except Exception as e:
         print(str(e))
 
-def update_city_in_db(cursor, cnx, city, latitude, longitude):
+def update_city_in_db(cursor, cnx, city, latitude, longitude, max_temp, max_humidity, max_pressure, max_wind_speed):
     try:
         query = f"UPDATE cities SET latitude = {latitude}, longitude = {longitude} WHERE city_name = '{city}'"
+        cursor.execute(query)
+        query = f"UPDATE red_flags SET max_temp = {max_temp}, max_humidity = {max_humidity}, max_pressure = {max_pressure}, max_wind_speed = {max_wind_speed} WHERE city_name = '{city}'"
         cursor.execute(query)
         print(f"Updated city '{city}' in the database")
         cnx.commit()
@@ -155,4 +166,5 @@ def check_red_flags(data):
     except Exception as e:
         print(str(e))
 
-# handle('{"city": "London"}')
+print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
+# print(handle('{"city": "Liverpool"}'))
