@@ -2,6 +2,8 @@ import json
 import requests
 from mysql.connector import (connection)
 
+
+
 config = {
   'user': 'jaken',
   'password': 'i_love_cloud1',
@@ -88,7 +90,7 @@ def handle(req):
 
 # print(handle(json.dumps({
 #     "city": "London",
-#     "wind": 3,
+#     "wind": 1,
 #     "temp": 20,
 #     "temp_max": 25,
 #     "temp_min": 15,
