@@ -1,9 +1,3 @@
-import json
-import requests
-import pyodbc
-
-# import mysql.connector
-
 from mysql.connector import (connection)
 
 config = {
