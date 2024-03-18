@@ -30,7 +30,7 @@ def handle(req):
     
     # parse the request
     try:
-        # req = json.loads(req)
+        req = json.loads(req)
         city = get_val_or_error(req, "city")
         wind = get_val_or_error(req, "wind")
         temp = get_val_or_error(req, "temp")
