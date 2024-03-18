@@ -23,8 +23,10 @@ def handle(req):
         cnx = connection.MySQLConnection(**config)
         cursor = cnx.cursor()
     except Exception as e:
-        print("Error: ", e)
-        return
+        return {
+            "status": 500,
+            "message": "Failed to connect to the database"
+        }
 
     try:
         data = json.loads(req)
@@ -46,13 +48,19 @@ def handle(req):
                 # if it does, update the coordinates
                 update_city_in_db(cursor, cnx, city, latitude, longitude)
     except ValueError as e:
-        print(str(e))
-        return
+        return {
+            "status": 400,
+            "message": str(e)
+        }
 
     if coords is not None:
-        call_api(coords[0], coords[1])
+        call_api(coords[0], coords[1], city)
     else:
-        print(f"City '{city}' not found in the database\n If you want to add it to the database, please provide the latitude and longitude.")
+        return {
+            "status": 404,
+            "message": "City not found",
+            "message-long": "If you want to add it to the database, please provide the latitude and longitude."
+        }
    
 
 def get_coords_from_db(cursor, city):
@@ -68,15 +76,40 @@ def get_coords_from_db(cursor, city):
             return None
     except Exception as e:
         print(str(e))
+        return None
 
-def call_api(latitude, longitude):
+def call_api(latitude, longitude, city):
     api_key = "044d96d0a9150903ca5e80fc1a5da8e7"
 
     try:
         url = f"https://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={api_key}"
         response = requests.get(url)
-        data = response.json()    
-        print(json.dumps(data))
+        data = response.json()   
+        output = format_data(data, city) 
+        return output
+    except Exception as e:
+        print(str(e))
+
+
+def format_data(data, city):
+    try:
+        wind = data["wind"]["speed"]
+        temp = data["main"]["temp"]
+        temp_min = data["main"]["temp_min"]
+        temp_max = data["main"]["temp_max"]
+        pressure = data["main"]["pressure"]
+        humidity = data["main"]["humidity"]
+        output_data = {
+            "city": city,
+            "wind": wind,
+            "temp": temp,
+            "temp_min": temp_min,
+            "temp_max": temp_max,
+            "pressure": pressure,
+            "humidity": humidity
+        }
+        return output_data
+
     except Exception as e:
         print(str(e))
 
@@ -99,4 +132,4 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude):
     except Exception as e:
         print(str(e))
 
-# handle('{"city": "BRUM"}')
+handle('{"city": "London"}')
