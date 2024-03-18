@@ -65,16 +65,16 @@ def handle(req):
     # check if any vals are above the max
     returnMsg = ""
     errorFlag = False
-    if float(wind) > max_wind:
+    if float(wind) > float(max_wind):
         returnMsg += "Warning: Wind is too high\n"
         errorFlag = True
-    if float(temp) > max_temp:
+    if float(temp) > float(max_temp):
         returnMsg += "Warning: Temperature is too high\n"
         errorFlag = True
-    if float(humidity) > max_humidity:
+    if float(humidity) > float(max_humidity):
         returnMsg += "Warning: Humidity is too high\n"
         errorFlag = True
-    if float(pressure) > max_pressure:
+    if float(pressure) > float(max_pressure):
         returnMsg += "Warning: Pressure is too high\n"
         errorFlag = True
     
