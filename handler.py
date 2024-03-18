@@ -141,4 +141,4 @@ def check_red_flags(data):
     except Exception as e:
         print(str(e))
 
-handle('{"city": "London"}')
+# handle('{"city": "London"}')
