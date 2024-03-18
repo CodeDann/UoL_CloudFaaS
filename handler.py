@@ -17,7 +17,7 @@ def get_val_or_error(request, key):
     return val
 
 
-def handle(req):
+def handle(event, context):
     # connect to the database
     try:
         cnx = connection.MySQLConnection(**config)
@@ -30,7 +30,10 @@ def handle(req):
         }
     print("Connected to the database")
     try:
-        data = json.loads(req)
+        print(event)
+        print(event.get("data"))
+        data = event
+        # data = json.loads(req)
         if len(data) == 0:
             raise ValueError("No data provided")
         elif len(data) == 1:
