@@ -19,6 +19,7 @@ def get_val_or_error(request, key):
 
 def handle(req):
     print("red flags handler")
+    print(req)
     # connect to the database
     try:
         cnx = connection.MySQLConnection(**config)
@@ -35,8 +36,8 @@ def handle(req):
         city = get_val_or_error(req, "city")
         wind = get_val_or_error(req, "wind")
         temp = get_val_or_error(req, "temp")
-        max_temp = get_val_or_error(req, "max_temp")
-        min_temp = get_val_or_error(req, "min_temp")
+        max_temp = get_val_or_error(req, "temp_min")
+        min_temp = get_val_or_error(req, "temp_max")
         humidity = get_val_or_error(req, "humidity")
         pressure = get_val_or_error(req, "pressure")
     except ValueError as e:
@@ -46,6 +47,7 @@ def handle(req):
         }
 
     print("got values")
+
     # get max vals from db
     try:
         query = ("SELECT * FROM red_flags WHERE city_name = %s")
