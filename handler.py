@@ -2,19 +2,29 @@ import json
 import requests
 import pyodbc
 
+# import mysql.connector
+
+from mysql.connector import (connection)
+
+config = {
+  'user': 'jaken',
+  'password': 'i_love_cloud1',
+  'host': 'sc20jdpn-mysql-db.mysql.database.azure.com',
+  'database': 'data',
+  'raise_on_warnings': True,
+
+}
 
 def connect_to_db():
-
-    cnxn = pyodbc.connect('Driver={ODBC Driver 18 for SQL Server};Server=tcp:sc20jdpn-cw2-server.database.windows.net,1433;Database=sc20jdpn-cw2-db;Uid=user;Pwd={Password1};Encrypt=yes;TrustServerCertificate=no;Connection Timeout=30;')
-    cursor = cnxn.cursor()
-    print(cursor.description)
+    try:
+        cnx = connection.MySQLConnection(**config)
+        cnx.close()
+        print("connected")
+    except Exception as e:
+        print("Error: ", e)
 
 def handle(req):
-    # data = json.loads(req)
-    # print("YOYO gotta connect to database")
-
-    
-    # print(data)
     connect_to_db()
  
 # connect_to_db()
+# handle("")
