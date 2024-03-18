@@ -23,6 +23,7 @@ def handle(req):
         cnx = connection.MySQLConnection(**config)
         cursor = cnx.cursor()
     except Exception as e:
+        print("Failed to connect to the database")
         return {
             "status": 500,
             "message": "Failed to connect to the database"
@@ -48,9 +49,10 @@ def handle(req):
                 # if it does, update the coordinates
                 update_city_in_db(cursor, cnx, city, latitude, longitude)
     except ValueError as e:
-        return {
+        print("Error extracting data" + str(e))
+        return {    
             "status": 400,
-            "message": str(e)
+            "message": "Error extracting data" + str(e)
         }
 
     if coords is not None:
@@ -141,4 +143,4 @@ def check_red_flags(data):
     except Exception as e:
         print(str(e))
 
-# handle('{"city": "London"}')
+handle('{"city": "London"}')
