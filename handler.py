@@ -165,7 +165,7 @@ def check_red_flags(data):
         try:
             print(response.json())
         except:
-            print(response.content)
+            print(json.loads(response.content))
     except Exception as e:
         print(str(e))
 
