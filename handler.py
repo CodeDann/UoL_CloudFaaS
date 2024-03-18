@@ -142,7 +142,8 @@ def check_red_flags(data):
     try:
         data = json.dumps(data)
         print("Data: " + data)
-        response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data)
+        print(type(data))
+        response = requests.post("http://127.0.0.1:8080/function/red-flags", json=data, headers={"Content-Type": "application/json"})
         print(response.json())
     except Exception as e:
         print(str(e))
