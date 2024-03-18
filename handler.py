@@ -70,7 +70,7 @@ def handle(req):
     print("returning")
     return {
         "status": 200,
-        "message": "Success",
+        "message": "yoyo from red flags handler",
         "max_wind": max_wind,
         "max_temp": max_temp,
         "max_humidity": max_humidity,
