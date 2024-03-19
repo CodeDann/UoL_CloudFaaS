@@ -38,6 +38,7 @@ def handle(req):
             city = get_val_or_error(data, "city")
             if city == "*" or city == "all":
                 handle_all(cursor)
+                return
             coords = get_coords_from_db(cursor, city)
             if coords is None:
                 return {
@@ -160,7 +161,7 @@ def check_red_flags(data):
         print("Calling Data Analyitcs Function")
         requests.post("http://gateway:8080/function/data-calc", json=data)
         # call red-flags function
-        print("Call Reporting Function")
+        print("Calling Reporting Function")
         requests.post("http://gateway:8080/function/red-flags", json=data)
     except Exception as e:
         print(str(e))
