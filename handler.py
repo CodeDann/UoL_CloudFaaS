@@ -166,7 +166,7 @@ def check_red_flags(data):
         print(str(e))
 
 def handle_all(cursor):
-    query = "SELECT city_name, latitide, longitude FROM cities"
+    query = "SELECT city_name, latitude, longitude FROM cities"
     cursor.execute(query)
     rows = cursor.fetchall()
     for row in rows:
