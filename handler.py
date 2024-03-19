@@ -39,17 +39,18 @@ def handle(req):
             if city == "*" or city == "all":
                 response = handle_all(cursor)
                 return response
-            coords = get_coords_from_db(cursor, city)
-            if coords is None:
-                return {
-                    "status": 404,
-                    "message": "City not found",
-                    "message-long": "If you want to add it to the database, please provide the latitude, longitude, and max_temp, max_humiditiy, max_pressure, max_wind_speed."
-                }
             else:
-                output = call_api(coords[0], coords[1], city)
-                response = check_red_flags(output)
-                return response
+                coords = get_coords_from_db(cursor, city)
+                if coords is None:
+                    return {
+                        "status": 404,
+                        "message": "City not found",
+                        "message-long": "If you want to add it to the database, please provide the latitude, longitude, and max_temp, max_humiditiy, max_pressure, max_wind_speed."
+                    }
+                else:
+                    output = call_api(coords[0], coords[1], city)
+                    response = check_red_flags(output)
+                    return response
         elif len(data) == 7:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
@@ -189,4 +190,4 @@ def handle_all(cursor):
             return response
     return response
 # print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
-print(handle('{"city": "*"}'))
+# print(handle('{"city": "*"}'))
