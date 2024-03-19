@@ -185,8 +185,8 @@ def handle_all(cursor):
         lon = row[2]
         output = call_api(lat, lon, city)
         response = check_red_flags(output)
-        if response.status != 200:
+        if response.get('status') != 200:
             return response
     return response
 # print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
-# print(handle('{"city": "*"}').content)
+print(handle('{"city": "*"}'))
