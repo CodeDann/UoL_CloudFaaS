@@ -37,8 +37,8 @@ def handle(req):
         elif len(data) == 1:
             city = get_val_or_error(data, "city")
             if city == "*" or city == "all":
-                handle_all(cursor)
-                return
+                response = handle_all(cursor)
+                return response
             coords = get_coords_from_db(cursor, city)
             if coords is None:
                 return {
