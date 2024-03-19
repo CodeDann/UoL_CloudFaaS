@@ -48,7 +48,8 @@ def handle(req):
                 }
             else:
                 output = call_api(coords[0], coords[1], city)
-                check_red_flags(output)
+                response = check_red_flags(output)
+                return response
         elif len(data) == 7:
             city = get_val_or_error(data, "city")
             latitude = get_val_or_error(data, "lat")
@@ -164,7 +165,15 @@ def check_red_flags(data):
         print("Calling Reporting Function")
         requests.post("http://gateway:8080/function/red-flags", json=data)
     except Exception as e:
-        print(str(e))
+        return {
+            "status": 500,
+            "message": "Failed to call the reporting function"        
+        }
+
+    return {
+        "status": 200,
+        "message": "Successfully called the reporting function"
+    }
 
 def handle_all(cursor):
     query = "SELECT city_name, latitude, longitude FROM cities"
@@ -175,7 +184,9 @@ def handle_all(cursor):
         lat = row[1]
         lon = row[2]
         output = call_api(lat, lon, city)
-        check_red_flags(output)
-
+        response = check_red_flags(output)
+        if response.status != 200:
+            return response
+    return response
 # print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
 # print(handle('{"city": "*"}').content)
