@@ -36,6 +36,8 @@ def handle(req):
             raise ValueError("No data provided")
         elif len(data) == 1:
             city = get_val_or_error(data, "city")
+            if city == "*" or city == "all":
+                handle_all(cursor)
             coords = get_coords_from_db(cursor, city)
             if coords is None:
                 return {
@@ -155,20 +157,24 @@ def update_city_in_db(cursor, cnx, city, latitude, longitude, max_temp, max_humi
 
 def check_red_flags(data):
     try:
-        # data = json.dumps(data)
-        # print("Calling red-flags with data: " + data)
-        # call data calc function
-        print("Data analyitics function called")
+        print("Calling Data Analyitcs Function")
         requests.post("http://gateway:8080/function/data-calc", json=data)
         # call red-flags function
-        response = requests.post("http://gateway:8080/function/red-flags", json=data)
-        print("response from red-flags: ")
-        try:
-            print(response.json())
-        except:
-            print(response.text)
+        print("Call Reporting Function")
+        requests.post("http://gateway:8080/function/red-flags", json=data)
     except Exception as e:
         print(str(e))
 
+def handle_all(cursor):
+    query = "SELECT city_name, latitide, longitude FROM cities"
+    cursor.execute(query)
+    rows = cursor.fetchall()
+    for row in rows:
+        city = row[0]
+        lat = row[1]
+        lon = row[2]
+        output = call_api(lat, lon, city)
+        check_red_flags(output)
+
 # print(handle('{"city": "Liverpool", "lat": 53.4075, "lon": -2.9919, "max_temp": 200, "max_humidity": 80, "max_pressure": 1000, "max_wind_speed": 10}'))
-# print(handle('{"city": "Liverpool"}'))
+# print(handle('{"city": "*"}').content)
