@@ -63,9 +63,16 @@ def handle(req):
         averages = df.mean()
         # calculate the standard deviation
         std_dev = df.std()
-        # save means and standard deviation to the database
-        cursor.execute("INSERT INTO stats (city_name, average_temp, deviation_temp, average_wind, deviation_wind, average_humidity, deviation_humidity, average_pressure, deviation_pressure) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (city, float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"])))
-        cnx.commit()
+        # check if city already exists in the database
+        cursor.execute("SELECT city_name FROM stats WHERE city_name = %s", (city,))
+        if cursor.fetchone() is None:
+            # insert new city to the database
+            cursor.execute("INSERT INTO stats (city_name, average_temp, deviation_temp, average_wind, deviation_wind, average_humidity, deviation_humidity, average_pressure, deviation_pressure) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)", (city, float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"])))
+            cnx.commit()
+        else:
+            # update means and standard deviation to the database
+            cursor.execute("UPDATE stats SET average_temp = %s, deviation_temp = %s, average_wind = %s, deviation_wind = %s, average_humidity = %s, deviation_humidity = %s, average_pressure = %s, deviation_pressure = %s WHERE city_name = %s", (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), city))
+            cnx.commit()
     except Exception as e:
         return {
             "status": 500,
