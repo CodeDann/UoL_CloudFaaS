@@ -1,7 +1,7 @@
 import json
 import requests
 from mysql.connector import (connection)
-
+import datetime
 
 
 config = {
@@ -68,32 +68,42 @@ def handle(req):
     returnMsg = ""
     errorFlag = False
     if float(wind) > float(max_wind):
-        returnMsg += "Warning: Wind is too high\n"
+        returnMsg += "Warning: Wind is too high! "
         errorFlag = True
     if float(temp) > float(max_temp):
-        returnMsg += "Warning: Temperature is too high\n"
+        returnMsg += "Warning: Temperature is too high! "
         errorFlag = True
     if float(humidity) > float(max_humidity):
-        returnMsg += "Warning: Humidity is too high\n"
+        returnMsg += "Warning: Humidity is too high! "
         errorFlag = True
     if float(pressure) > float(max_pressure):
-        returnMsg += "Warning: Pressure is too high\n"
+        returnMsg += "Warning: Pressure is too high! "
         errorFlag = True
     
     if errorFlag == False:
-        returnMsg = "All values are within the acceptable range\n"
+        returnMsg = "All values are within the acceptable range."
 
-    return {
-        "status": 200,
-        "message": returnMsg,
-    }
+    # save to reports
+    try:
+        add_report = ("INSERT INTO reports "
+               "(city_name, report_description, report_date)"
+               "VALUES (%s, %s, %s)")
+        data_report = (city, returnMsg, datetime.datetime.now())
+        cursor.execute(add_report, data_report)
+        cnx.commit()
+    except Exception as e:
+        return {
+            "status": 500,
+            "message": "Failed to save report to db" + str(e)
+        }
 
-# print(handle(json.dumps({
-#     "city": "London",
-#     "wind": 1,
-#     "temp": 20,
-#     "temp_max": 25,
-#     "temp_min": 15,
-#     "humidity": 50,
-#     "pressure": 1010
-# })))
+
+print(handle(json.dumps({
+    "city": "London",
+    "wind": 1,
+    "temp": 20,
+    "temp_max": 25,
+    "temp_min": 15,
+    "humidity": 50,
+    "pressure": 1010
+})))
