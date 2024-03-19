@@ -89,12 +89,12 @@ def handle(req):
     }
 
 
-print(handle(json.dumps({
-    "city": "London",
-    "wind": 1,
-    "temp": 20,
-    "temp_max": 25,
-    "temp_min": 15,
-    "humidity": 50,
-    "pressure": 1010
-})))
+# print(handle(json.dumps({
+#     "city": "London",
+#     "wind": 1,
+#     "temp": 20,
+#     "temp_max": 25,
+#     "temp_min": 15,
+#     "humidity": 50,
+#     "pressure": 1010
+# })))
