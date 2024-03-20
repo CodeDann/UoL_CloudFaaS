@@ -68,7 +68,7 @@ def handle(req):
         cursor.execute("SELECT city_name FROM stats WHERE city_name = %s", (city,))
         if cursor.fetchone() is None:
             # insert new city to the database
-            cursor.execute("INSERT INTO stats (city_name, average_temp, deviation_temp, average_wind, deviation_wind, average_humidity, deviation_humidity, average_pressure, deviation_pressure, last_updated) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (city, float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now())
+            cursor.execute("INSERT INTO stats (city_name, average_temp, deviation_temp, average_wind, deviation_wind, average_humidity, deviation_humidity, average_pressure, deviation_pressure, last_updated) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)", (city, float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now()))
             cnx.commit()
         else:
             # update means and standard deviation to the database
@@ -81,9 +81,10 @@ def handle(req):
                     average_humidity = %s, 
                     deviation_humidity = %s, 
                     average_pressure = %s, 
-                    deviation_pressure = %s
+                    deviation_pressure = %s, 
+                    last_updated = %s
                 WHERE city_name = %s
-            """, (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), city))
+            """, (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now(), city))
             cnx.commit()
     except Exception as e:
         return {
