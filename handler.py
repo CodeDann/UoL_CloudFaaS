@@ -72,7 +72,19 @@ def handle(req):
             cnx.commit()
         else:
             # update means and standard deviation to the database
-            cursor.execute("UPDATE stats SET average_temp = %s, deviation_temp = %s, average_wind = %s, deviation_wind = %s, average_humidity = %s, deviation_humidity = %s, average_pressure = %s, deviation_pressure = %s, last_updated = %s WHERE city_name = %s", (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now(), city))
+            cursor.execute("""
+                UPDATE stats 
+                SET average_temp = %s, 
+                    deviation_temp = %s, 
+                    average_wind = %s, 
+                    deviation_wind = %s, 
+                    average_humidity = %s, 
+                    deviation_humidity = %s, 
+                    average_pressure = %s, 
+                    deviation_pressure = %s, 
+                    last_updated = %s
+                WHERE city_name = %s
+            """, (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now(), city))
             cnx.commit()
     except Exception as e:
         return {
