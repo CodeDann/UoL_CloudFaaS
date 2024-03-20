@@ -81,10 +81,9 @@ def handle(req):
                     average_humidity = %s, 
                     deviation_humidity = %s, 
                     average_pressure = %s, 
-                    deviation_pressure = %s, 
-                    last_updated = %s
+                    deviation_pressure = %s
                 WHERE city_name = %s
-            """, (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), datetime.datetime.now(), city))
+            """, (float(averages["temp"]), float(std_dev["temp"]), float(averages["wind"]), float(std_dev["wind"]), float(averages["humidity"]), float(std_dev["humidity"]), float(averages["pressure"]), float(std_dev["pressure"]), city))
             cnx.commit()
     except Exception as e:
         return {
